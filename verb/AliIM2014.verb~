@@ -1,0 +1,33 @@
+w_metadata AliIM2014 apps \
+ title="AliIM2014" \
+ publisher="taobao" \
+ year="2015" \
+ media="download" \
+ file1="AliIM2014_taobao(8.00.63C).exe" \
+ installed_exe1="$W_PROGRAMS_X86_WIN/AliWangWang/AliIM.exe" \
+ homepage="http://web.wangwang.taobao.com/" \
+ unattended="no"
+
+load_qq()
+{
+    w_download http://download.taobaocdn.com/wangwang/AliIM2014_taobao(8.00.63C).exe
+    if w_workaround_wine_bug 29636 "Installing native riched20 to work around crash bug"
+    then
+        w_call riched20
+    fi
+
+    if w_workaround_wine_bug 34566 "Installing native ctf to work around crash"
+    then
+        w_call msctf
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+    # uses mfc42u.dll
+    w_call mfc42
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\AliWangWang" AliIM.exe
+}
